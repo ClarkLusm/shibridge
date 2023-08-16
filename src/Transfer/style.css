@@ -1,0 +1,21 @@
+.input-value {
+  border: 1px solid #637592;
+  outline: none;
+  font-weight: 600;
+}
+
+.input-value.error {
+  border-color: #E03232;
+}
+
+.transfer-body {
+  background-image: url('../../public/images/bg.jpeg');
+  background-size: 100%;
+  background-repeat: no-repeat;
+  background-position: center;
+  min-height: 100vh;
+}
+
+.btn-submit:disabled {
+  color: #3A4455;
+}
