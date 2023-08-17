@@ -12,10 +12,14 @@
   background-image: url('../../public/images/bg.jpeg');
   background-size: 100%;
   background-repeat: no-repeat;
-  background-position: center;
+  background-position: top center;
   min-height: 100vh;
 }
 
 .btn-submit:disabled {
   color: #3A4455;
+}
+
+.landscape .transfer-body {
+  background-size: 100% 100%;
 }

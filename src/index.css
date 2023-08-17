@@ -16,3 +16,11 @@ body {
   font-size: 14px;
   line-height: 24px;
 }
+
+.landscape {
+  transform-origin: top left;
+  transform: translateX(100vw) rotate(90deg);
+  width: 100vh;
+  height: 100vw;
+  overflow: auto;
+}
