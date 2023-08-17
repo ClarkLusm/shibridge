@@ -1,11 +1,13 @@
 import { Fragment, useEffect, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
-import './style.css'
 import { ToastSuccess } from './ToastSuccess';
+import SelectToken from './SelectToken';
+import './style.css';
 
 function Transfer() {
 
   const [open, setOpen] = useState(false)
+  const [show, setShow] = useState(false)
   const [valueFrom, setValueFrom] = useState('');
   const [valueTo, setValueTo] = useState('');
   const [tokenFrom, setTokenFrom] = useState('ETH');
@@ -98,7 +100,7 @@ function Transfer() {
   return (
     <div className='transfer-body '>
       <div className="container mx-auto">
-        <div className="flex justify-between max-w-[50%] pt-16 mx-auto">
+        <div className="flex justify-between max-w-[60%] pt-16 mx-auto">
           <h3 className="text-3xl font-['Fractul_Alt']">Bridge Tokens</h3>
           <p>
             <span className='text-gray mr-1'>(0)</span>
@@ -110,10 +112,26 @@ function Transfer() {
 
           <div className='col-span-3'>
             <div className="transfer-form p-10 bg-black">
-              <div className="flex items-center justify-between my-2">
+              <div className='flex items-center gap-x-2 mb-10' onClick={() => setShow(true)}>
+                <span className="text-xl font-['Fractul_Alt']">Tokens</span>
+                <svg className="h-4 w-4 flex-none text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                  <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
+                </svg>
+                <div className='rounded-md px-4 py-3 bg-midnight'>
+                  <div className="flex items-center text-sm">
+                    <img className="h-6 w-6" src="./logo.svg" alt="Your Company" />
+                    <span className='ml-3 font-semibold'>SHIBRIDGE</span>
+                  </div>
+                </div>
+              </div>
+              <div className="flex items-center justify-between mb-2">
                 <span className='text-xs'>From: <strong>Ethereum</strong></span>
                 <div className="relative">
-                  <button type="button" className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-300" aria-expanded="false">
+                  <button
+                    type="button"
+                    className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-300"
+                    onClick={() => setShow(true)}
+                  >
                     <img src={`./tokens/${tokenFrom}.svg`} />
                     {tokenFrom}
                     <svg className="h-5 w-5 flex-none text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -151,7 +169,11 @@ function Transfer() {
               <div className="flex items-center justify-between my-2">
                 <span className="text-gray text-xs">To: <strong>Shibarium</strong></span>
                 <div className="relative">
-                  <button type="button" className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-300" aria-expanded="false">
+                  <button
+                    type="button"
+                    className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-300"
+                    onClick={() => setShow(true)}
+                  >
                     <img src={`./tokens/${tokenTo}.svg`} />
                     {tokenTo}
                     <svg className="h-5 w-5 flex-none text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
@@ -286,6 +308,8 @@ function Transfer() {
       </Transition.Root>
 
       {completed && <ToastSuccess />}
+
+      <SelectToken show={show} onClose={() => setShow(false)} />
     </div>
   );
 }
