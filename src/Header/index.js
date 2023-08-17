@@ -6,8 +6,8 @@ function Header() {
   return (
     <header className="header">
       <div className="min-h-full">
-        <nav class="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
-          <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
+        <nav className="mx-auto flex max-w-7xl items-center justify-between p-6 lg:px-8">
+          <div className="max-w-7xl px-4 sm:px-6 lg:px-8">
             <div className="flex h-16 items-center justify-between">
               <div className="flex items-center">
                 <img className="h-8 w-8" src="./logo.svg" alt="Your Company" />
@@ -16,13 +16,13 @@ function Header() {
             </div>
           </div>
           <Popover.Group className="hidden lg:flex lg:gap-x-12">
-            <div className="hidden lg:gap-x-12 lg:flex lg:flex-1 lg:justify-end items-center">
+            <div className="hidden lg:gap-x-6 lg:flex lg:flex-1 lg:justify-end items-center">
               <a href="#" className="text-sm font-semibold text-blue">Bridge</a>
               <Popover className="relative">
                 <Popover.Button className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-900">
                   More
-                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20" stroke-width="1.5" stroke="currentColor" class="w-4 h-4">
-                    <path stroke-linecap="round" stroke-linejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
+                  <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 20 20" strokeWidth="1.5" stroke="currentColor" className="w-4 h-4">
+                    <path strokeLinecap="round" strokeLinejoin="round" d="M19.5 8.25l-7.5 7.5-7.5-7.5" />
                   </svg>
                 </Popover.Button>
                 <Transition
@@ -36,11 +36,11 @@ function Header() {
                 >
                   <Popover.Panel className="absolute -left-8 top-full z-10 mt-3 w-screen max-w-sm overflow-hidden rounded-3xl bg-white shadow-lg ring-1 ring-gray-900/5">
                     <div className="p-4">
-                      <div class="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm hover:bg-gray-50">
-                        <div class="flex-auto">
-                          <a href="#" class="block font-semibold text-gray-900">
+                      <div className="group relative flex items-center gap-x-6 rounded-lg p-4 text-sm hover:bg-gray-50">
+                        <div className="flex-auto">
+                          <a href="#" className="block font-semibold text-gray-900">
                             Sub Item
-                            <span class="absolute inset-0"></span>
+                            <span className="absolute inset-0"></span>
                           </a>
                         </div>
                       </div>
@@ -48,7 +48,7 @@ function Header() {
                   </Popover.Panel>
                 </Transition>
               </Popover>
-              <button type="button" class="flex items-center gap-x-1 rounded-xl bg-midnight font-bold p-3">
+              <button type="button" className="flex items-center gap-x-1 rounded-xl bg-midnight font-bold p-3">
                 <img style={{ height: 20 }} src='./tokens/ETH.svg' />
                 <span className='ml-2'>ETHEREUM</span>
               </button>

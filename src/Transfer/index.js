@@ -1,6 +1,7 @@
-import { Fragment, useRef, useState } from 'react'
+import { Fragment, useEffect, useRef, useState } from 'react'
 import { Dialog, Transition } from '@headlessui/react'
 import './style.css'
+import { ToastSuccess } from './ToastSuccess';
 
 function Transfer() {
 
@@ -9,13 +10,89 @@ function Transfer() {
   const [valueTo, setValueTo] = useState('');
   const [tokenFrom, setTokenFrom] = useState('ETH');
   const [tokenTo, setTokenTo] = useState('SHIBARIUM');
+  const [loading, setLoading] = useState(false);
+  const [completed, setCompleted] = useState(false);
+  const [validValue, setValidValue] = useState(false);
+  const [step, setStep] = useState(1);
 
-  const cancelButtonRef = useRef(null)
+  const cancelButtonRef = useRef(null);
+
+  useEffect(() => {
+    setValidValue(valueFrom > 0 && valueFrom <= 1000 && valueTo > 0 && valueTo <= 1000);
+  }, [valueFrom, valueTo])
+
 
   const swapToken = () => {
     const tmpToken = `${tokenTo}`;
     setTokenTo(tokenFrom);
     setTokenFrom(tmpToken);
+  }
+
+  const showConfirm = () => {
+    if (step < 4) {
+      setStep(step + 1);
+    }
+    if (valueFrom && valueTo) {
+      setLoading(true);
+      setTimeout(() => {
+        setLoading(false);
+        setOpen(true);
+        setCompleted(true);
+      }, 1500);
+    }
+  }
+
+  const getButton = () => {
+    if (completed) {
+      return <span>Complete</span>
+    }
+    else if (loading) {
+      return (
+        <div className='flex items-center justify-center'>
+          <span>Transfering</span>
+          <div className="animate-spin">
+            <img src='./icons/loading.svg' />
+          </div>
+        </div>
+      )
+    }
+    else if (valueFrom > 1000 || valueTo > 1000) {
+      return <span>Insufficient balance on sending chain</span>
+    }
+    else if (valueFrom > 0 && valueTo > 0) {
+      return <span>Transfer</span>;
+    }
+    else {
+      return <span>Enter An Amount</span>
+    }
+  }
+
+  const getStep = (value) => {
+    if (step < value) {
+      return (
+        <span className="absolute left-0 z-12 flex items-start justify-center w-10 h-11 -translate-x-1/2">
+          <span className={`rounded-full text-sm text-gray w-7 h-7 flex items-center justify-center  border border-gray ${value < 3 ? 'before:absolute before:top-7 before:left-5 before:h-full before:border before:-translate-x-1/2 before:border-gray' : ''}`}>
+            {value}
+          </span>
+        </span>
+      )
+    }
+    else if (step == value) {
+      return (
+        <span className="absolute left-0 z-12 flex items-start justify-center w-10 h-11 -translate-x-1/2">
+          <span className={`rounded-full bg-blue text-sm text-white w-7 h-7 flex items-center justify-center ${value < 3 ? 'before:absolute before:top-7 before:left-5 before:h-full before:border before:-translate-x-1/2 before:border-gray' : ''}`}>
+            {value}
+          </span>
+        </span>
+      )
+    }
+    else {
+      return (
+        <span className={`absolute left-0 z-10 flex items-start justify-center w-10 h-12 -translate-x-1/2 before:absolute before:top-7 ${value < 3 ? 'before:left-5 before:h-full before:border before:-translate-x-1/2 before:border-gray' : ''}`}>
+          <img src='./icons/check.svg' />
+        </span>
+      )
+    }
   }
 
   return (
@@ -28,19 +105,19 @@ function Transfer() {
             <span className="text-blue">Recent Transactions</span>
           </p>
         </div>
-        <div class="grid grid-flow-row-dense grid-cols-5">
+        <div className="grid grid-flow-row-dense grid-cols-5">
           <div className='col-span-1'></div>
 
           <div className='col-span-3'>
             <div className="transfer-form p-10 bg-black">
               <div className="flex items-center justify-between my-2">
                 <span className='text-xs'>From: <strong>Ethereum</strong></span>
-                <div class="relative">
-                  <button type="button" class="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-300" aria-expanded="false">
+                <div className="relative">
+                  <button type="button" className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-300" aria-expanded="false">
                     <img src={`./tokens/${tokenFrom}.svg`} />
                     {tokenFrom}
-                    <svg class="h-5 w-5 flex-none text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    <svg className="h-5 w-5 flex-none text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
                     </svg>
                   </button>
                 </div>
@@ -48,15 +125,21 @@ function Transfer() {
 
               <div className="input-from">
                 <input
+                  value={valueFrom}
                   placeholder='0'
-                  className="input-value w-full px-4 py-5 text-center bg-midnight rounded-xl error"
+                  className={`input-value w-full px-4 py-5 text-center bg-midnight rounded-xl ${valueFrom > 1000 ? 'error' : ''}`}
                   onChange={e => setValueFrom(e.target.value)}
                 />
               </div>
 
               <div className="flex my-2 text-xs">
                 <span className='text-gray mr-2'>Balance: 28,874,769</span>
-                <button className="text-blue font-bold">MAX</button>
+                <button
+                  className="text-blue font-bold"
+                  onClick={() => setValueFrom(1000)}
+                >
+                  MAX
+                </button>
               </div>
 
               <div className="flex justify-center">
@@ -67,12 +150,12 @@ function Transfer() {
 
               <div className="flex items-center justify-between my-2">
                 <span className="text-gray text-xs">To: <strong>Shibarium</strong></span>
-                <div class="relative">
-                  <button type="button" class="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-300" aria-expanded="false">
+                <div className="relative">
+                  <button type="button" className="flex items-center gap-x-1 text-sm font-semibold leading-6 text-gray-300" aria-expanded="false">
                     <img src={`./tokens/${tokenTo}.svg`} />
                     {tokenTo}
-                    <svg class="h-5 w-5 flex-none text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
-                      <path fill-rule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clip-rule="evenodd" />
+                    <svg className="h-5 w-5 flex-none text-gray-400" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
+                      <path fillRule="evenodd" d="M5.23 7.21a.75.75 0 011.06.02L10 11.168l3.71-3.938a.75.75 0 111.08 1.04l-4.25 4.5a.75.75 0 01-1.08 0l-4.25-4.5a.75.75 0 01.02-1.06z" clipRule="evenodd" />
                     </svg>
                   </button>
                 </div>
@@ -80,57 +163,52 @@ function Transfer() {
 
               <div className="input-to">
                 <input
+                  value={valueTo}
                   placeholder='0'
-                  className="input-value w-full px-4 py-5 text-center bg-midnight rounded-xl"
+                  className={`input-value w-full px-4 py-5 text-center bg-midnight rounded-xl ${valueTo > 1000 ? 'error' : ''}`}
                   onChange={e => setValueTo(e.target.value)}
                 />
               </div>
 
               <div className="flex my-2 text-xs">
                 <span className="text-gray mr-2">Balance: 28,874,769</span>
-                <button className="text-blue font-bold">MAX</button>
-              </div>
-
-              <div className="bg-midnight mt-10 p-4 text-center text-blue rounded-xl">
                 <button
-                  className='btn-submit'
-                  onClick={() => setOpen(true)}
-                  disabled={!valueFrom || !valueTo}
+                  className="text-blue font-bold"
+                  onClick={() => setValueTo(1000)}
                 >
-                  {(valueFrom > 0 && valueTo > 0) ? 'Transfering' : 'Insufficient balance on sending chain'}
+                  MAX
                 </button>
               </div>
+
+              <button
+                className={`${(completed || validValue) ? 'text-white bg-blue' : 'bg-midnight text-blue'} btn-submit w-full mt-10 p-4 text-center rounded-xl`}
+                onClick={showConfirm}
+                disabled={!valueFrom || valueFrom > 1000 || !valueTo || valueTo > 1000}
+              >
+                {getButton()}
+              </button>
             </div>
           </div>
 
           <div className='col-span-1'>
-            <ul role="feed" class="relative flex flex-col gap-12 pl-8">
-              <li role="article" class="relative pl-8 text-center">
-                <span class="absolute left-0 z-10 flex items-start justify-center w-10 h-12 -translate-x-1/2 before:absolute before:top-7 before:left-5 before:h-full before:border before:-translate-x-1/2 before:border-gray">
-                  <img src='./icons/check.svg' />
-                </span>
-                <div class="flex flex-col flex-1 gap-4">
-                  <p class=" text-slate-500">Starting</p>
+            <ul role="feed" className="relative flex flex-col gap-12 pl-8">
+              <li role="article" className="relative pl-8 text-center">
+                {getStep(1)}
+                <div className="flex flex-col flex-1 gap-4">
+                  <p className="font-semibold">Starting</p>
                 </div>
               </li>
-              <li role="article" class="relative pl-8 text-center">
-                <span class="absolute left-0 z-12 flex items-start justify-center w-10 h-11 -translate-x-1/2">
-                  <span className="rounded-full bg-blue text-sm text-white w-7 h-7 flex items-center justify-center  before:absolute before:top-7 before:left-5 before:h-full before:border before:-translate-x-1/2 before:border-gray">
-                    2
-                  </span>
-                </span>
-                <div class="flex flex-col flex-1 gap-4">
-                  <p class=" text-slate-500">Bridge</p>
+              <li role="article" className="relative pl-8 text-center">
+                {getStep(2)}
+                <div className="flex flex-col flex-1 gap-4">
+                  <p className="font-semibold">Bridge</p>
                 </div>
               </li>
-              <li role="article" class="relative pl-8 text-center">
-                <span class="absolute left-0 z-12 flex items-start justify-center w-10 h-11 -translate-x-1/2">
-                  <span className="rounded-full text-sm text-gray w-7 h-7 flex items-center justify-center  border border-gray">
-                    3
-                  </span>
-                </span>
-                <div class="flex flex-col flex-1 gap-4">
-                  <p class=" text-slate-500">Complete</p>
+              <li role="article" className="relative pl-8 text-center">
+                {getStep(3)}
+
+                <div className="flex flex-col flex-1 gap-4">
+                  <p className="font-semibold">Complete</p>
                 </div>
               </li>
             </ul>
@@ -206,6 +284,8 @@ function Transfer() {
           </div>
         </Dialog>
       </Transition.Root>
+
+      {completed && <ToastSuccess />}
     </div>
   );
 }
