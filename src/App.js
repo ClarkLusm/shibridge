@@ -17,11 +17,16 @@ function App() {
   const windowResize = () => {
     const h = window.innerHeight,
       w = window.innerWidth;
-    setLandscape(h > w);
+
+    if (h > w) {
+      document.body.classList.add('landscape');
+    } else {
+      document.body.classList.remove('landscape');
+    }
   }
 
   return (
-    <div className={landscape ? 'landscape' : ''}>
+    <div>
       <Header />
       <Transfer />
     </div>
